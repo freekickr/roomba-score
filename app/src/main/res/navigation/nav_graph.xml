@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.freekickr.roombascore.screens.main.MainFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_mainFragment_to_gameFragment"
+            app:destination="@id/gameSetupFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_mainFragment_to_highscoresFragment"
+            app:destination="@id/highscoresFragment"
+            app:enterAnim="@anim/nav_default_pop_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameSetupFragment"
+        android:name="com.freekickr.roombascore.screens.gamesetup.GameSetupFragment"
+        android:label="GameSetupFragment"
+        tools:layout="@layout/fragment_game_setup" >
+        <action
+            android:id="@+id/action_gameSetupFragment_to_playersFragment"
+            app:destination="@id/playersFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/highscoresFragment"
+        android:name="com.freekickr.roombascore.screens.history.HighscoresFragment"
+        android:label="HighscoresFragment"
+        tools:layout="@layout/fragment_highscores"/>
+    <fragment
+        android:id="@+id/playersFragment"
+        android:name="com.freekickr.roombascore.screens.gameplayers.PlayersFragment"
+        android:label="PlayersFragment"
+        tools:layout="@layout/fragment_players">
+        <action
+            android:id="@+id/action_playersFragment_to_gameplayFragment"
+            app:destination="@id/gameplayFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameplayFragment"
+        android:name="com.freekickr.roombascore.screens.gameplay.GameplayFragment"
+        android:label="GameplayFragment"
+        tools:layout="@layout/fragment_gameplay">
+        <action
+            android:id="@+id/action_gameplayFragment_to_gameOverFragment"
+            app:destination="@id/gameOverFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameOverFragment"
+        android:name="com.freekickr.roombascore.screens.gameover.GameOverFragment"
+        android:label="GameOverFragment"
+        tools:layout="@layout/fragment_gameover"/>
+</navigation>
