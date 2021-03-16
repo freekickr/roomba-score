@@ -22,7 +22,7 @@ class PlayersFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_players, container, false)
+        binding = FragmentPlayersBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
 
         val viewModelFactory = PlayersViewModelFactory()

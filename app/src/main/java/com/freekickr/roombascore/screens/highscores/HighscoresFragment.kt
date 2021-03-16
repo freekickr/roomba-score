@@ -1,4 +1,4 @@
-package com.freekickr.roombascore.screens.history
+package com.freekickr.roombascore.screens.highscores
 
 import android.os.Bundle
 import android.view.LayoutInflater

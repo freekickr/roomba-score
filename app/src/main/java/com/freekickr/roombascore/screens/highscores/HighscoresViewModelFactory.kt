@@ -1,4 +1,4 @@
-package com.freekickr.roombascore.screens.history
+package com.freekickr.roombascore.screens.highscores
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

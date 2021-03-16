@@ -33,7 +33,7 @@
     </fragment>
     <fragment
         android:id="@+id/highscoresFragment"
-        android:name="com.freekickr.roombascore.screens.history.HighscoresFragment"
+        android:name="com.freekickr.roombascore.screens.highscores.HighscoresFragment"
         android:label="HighscoresFragment"
         tools:layout="@layout/fragment_highscores"/>
     <fragment
@@ -43,7 +43,8 @@
         tools:layout="@layout/fragment_players">
         <action
             android:id="@+id/action_playersFragment_to_gameplayFragment"
-            app:destination="@id/gameplayFragment" />
+            app:destination="@id/gameplayFragment"
+            app:popUpTo="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/gameplayFragment"
@@ -52,11 +53,17 @@
         tools:layout="@layout/fragment_gameplay">
         <action
             android:id="@+id/action_gameplayFragment_to_gameOverFragment"
-            app:destination="@id/gameOverFragment" />
+            app:destination="@id/gameOverFragment"
+            app:popUpTo="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/gameOverFragment"
         android:name="com.freekickr.roombascore.screens.gameover.GameOverFragment"
         android:label="GameOverFragment"
-        tools:layout="@layout/fragment_gameover"/>
+        tools:layout="@layout/fragment_gameover">
+        <action
+            android:id="@+id/action_gameOverFragment_to_gameSetupFragment"
+            app:destination="@id/gameSetupFragment"
+            app:popUpTo="@id/mainFragment" />
+    </fragment>
 </navigation>

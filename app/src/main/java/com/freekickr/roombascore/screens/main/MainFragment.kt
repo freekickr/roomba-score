@@ -22,7 +22,7 @@ class MainFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_main, container, false)
+        binding = FragmentMainBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
 
         val viewModelFactory = MainViewModelFactory()

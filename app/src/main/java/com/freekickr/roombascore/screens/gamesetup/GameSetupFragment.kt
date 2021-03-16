@@ -22,7 +22,7 @@ class GameSetupFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_game_setup, container, false)
+        binding = FragmentGameSetupBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
 
         val viewModelFactory = GameSetupViewModelFactory()
