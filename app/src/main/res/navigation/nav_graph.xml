@@ -6,7 +6,7 @@
     app:startDestination="@id/mainFragment">
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.freekickr.roombascore.screens.main.MainFragment"
+        android:name="com.freekickr.roombascore.ui.mainfragment.MainFragment"
         android:label="MainFragment"
         tools:layout="@layout/fragment_main">
         <action
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/gameSetupFragment"
-        android:name="com.freekickr.roombascore.screens.gamesetup.GameSetupFragment"
+        android:name="com.freekickr.roombascore.ui.gamesetup.GameSetupFragment"
         android:label="GameSetupFragment"
         tools:layout="@layout/fragment_game_setup" >
         <action
@@ -33,12 +33,12 @@
     </fragment>
     <fragment
         android:id="@+id/highscoresFragment"
-        android:name="com.freekickr.roombascore.screens.highscores.HighscoresFragment"
+        android:name="com.freekickr.roombascore.ui.highscores.HighscoresFragment"
         android:label="HighscoresFragment"
         tools:layout="@layout/fragment_highscores"/>
     <fragment
         android:id="@+id/playersFragment"
-        android:name="com.freekickr.roombascore.screens.gameplayers.PlayersFragment"
+        android:name="com.freekickr.roombascore.ui.gameplayers.PlayersFragment"
         android:label="PlayersFragment"
         tools:layout="@layout/fragment_players">
         <action
@@ -48,7 +48,7 @@
     </fragment>
     <fragment
         android:id="@+id/gameplayFragment"
-        android:name="com.freekickr.roombascore.screens.gameplay.GameplayFragment"
+        android:name="com.freekickr.roombascore.ui.gameplay.GameplayFragment"
         android:label="GameplayFragment"
         tools:layout="@layout/fragment_gameplay">
         <action
@@ -58,7 +58,7 @@
     </fragment>
     <fragment
         android:id="@+id/gameOverFragment"
-        android:name="com.freekickr.roombascore.screens.gameover.GameOverFragment"
+        android:name="com.freekickr.roombascore.ui.gameover.GameOverFragment"
         android:label="GameOverFragment"
         tools:layout="@layout/fragment_gameover">
         <action

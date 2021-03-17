@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.freekickr.roombascore.screens.gameplay.GameplayViewModel" />
+            type="com.freekickr.roombascore.ui.gameplay.GameplayViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

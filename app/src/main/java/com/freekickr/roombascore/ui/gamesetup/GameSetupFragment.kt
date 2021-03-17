@@ -1,38 +1,56 @@
-package com.freekickr.roombascore.screens.gamesetup
+package com.freekickr.roombascore.ui.gamesetup
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.freekickr.roombascore.R
 import com.freekickr.roombascore.databinding.FragmentGameSetupBinding
+import com.freekickr.roombascore.utils.ViewModelFactory
+import dagger.android.support.AndroidSupportInjection
+import javax.inject.Inject
+
+private const val TAG = "GameSetupFragment"
 
 class GameSetupFragment: Fragment() {
 
     private lateinit var binding: FragmentGameSetupBinding
-    private lateinit var viewModel: GameSetupViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(GameSetupViewModel::class.java)
+    }
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentGameSetupBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
-
-        val viewModelFactory = GameSetupViewModelFactory()
-        viewModel = ViewModelProvider(this, viewModelFactory).get(GameSetupViewModel::class.java)
 
         binding.viewModel = viewModel
 
         observeEnterPlayersClicked()
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "onViewCreated: $viewModelFactory")
     }
 
     private fun observeEnterPlayersClicked() {

@@ -1,4 +1,4 @@
-package com.freekickr.roombascore.screens.highscores
+package com.freekickr.roombascore.ui.highscores
 
 import androidx.lifecycle.ViewModel
 

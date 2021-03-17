@@ -1,4 +1,4 @@
-package com.freekickr.roombascore.screens.gameover
+package com.freekickr.roombascore.ui.gameover
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

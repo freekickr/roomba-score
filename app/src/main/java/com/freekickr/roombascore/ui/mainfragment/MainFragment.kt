@@ -1,32 +1,45 @@
-package com.freekickr.roombascore.screens.main
+package com.freekickr.roombascore.ui.mainfragment
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.freekickr.roombascore.R
 import com.freekickr.roombascore.databinding.FragmentMainBinding
+import com.freekickr.roombascore.utils.ViewModelFactory
+import dagger.android.support.AndroidSupportInjection
+import javax.inject.Inject
+
+private const val TAG = "MainFragment"
 
 class MainFragment: Fragment() {
 
     private lateinit var binding: FragmentMainBinding
-    private lateinit var viewModel: MainViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
+    }
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentMainBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
-
-        val viewModelFactory = MainViewModelFactory()
-        viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
 
         binding.viewModel = viewModel
 
@@ -34,6 +47,11 @@ class MainFragment: Fragment() {
         observeHighscoresButton()
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "onViewCreated: $viewModelFactory")
     }
 
     private fun observePlayButton() {
