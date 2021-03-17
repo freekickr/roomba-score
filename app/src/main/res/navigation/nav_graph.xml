@@ -41,6 +41,9 @@
         android:name="com.freekickr.roombascore.ui.gameplayers.PlayersFragment"
         android:label="PlayersFragment"
         tools:layout="@layout/fragment_players">
+        <argument
+            android:name="numberOfPlayers"
+            app:argType="integer"/>
         <action
             android:id="@+id/action_playersFragment_to_gameplayFragment"
             app:destination="@id/gameplayFragment"

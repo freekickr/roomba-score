@@ -6,16 +6,16 @@ import androidx.lifecycle.ViewModel
 
 class GameSetupViewModel : ViewModel() {
 
-    private val _eventEnterPlayersNames = MutableLiveData<Boolean>()
-    val eventEnterPlayersNames: LiveData<Boolean>
+    private val _eventEnterPlayersNames = MutableLiveData<Int>()
+    val eventEnterPlayersNames: LiveData<Int>
         get() = _eventEnterPlayersNames
 
-    fun onPlayersNumberClicked() {
-        _eventEnterPlayersNames.postValue(true)
+    fun onPlayersNumberClicked(nubmer: Int) {
+        _eventEnterPlayersNames.postValue(nubmer)
     }
 
     fun onEnterPlayersNamesNavigated() {
-        _eventEnterPlayersNames.postValue(false)
+        _eventEnterPlayersNames.postValue(-1)
     }
 
 }

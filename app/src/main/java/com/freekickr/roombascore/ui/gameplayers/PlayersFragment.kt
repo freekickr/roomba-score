@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -40,8 +41,10 @@ class PlayersFragment : Fragment() {
     ): View {
         binding = FragmentPlayersBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
-
         binding.viewModel = viewModel
+
+        val args = PlayersFragmentArgs.fromBundle(requireArguments())
+        createNameFields(args.numberOfPlayers)
 
         observeOnStartGameClicked()
 
@@ -56,9 +59,23 @@ class PlayersFragment : Fragment() {
     private fun observeOnStartGameClicked() {
         viewModel.eventStartGame.observe(viewLifecycleOwner, Observer {
             if (it) {
-                this.findNavController().navigate(PlayersFragmentDirections.actionPlayersFragmentToGameplayFragment())
+                this.findNavController()
+                    .navigate(PlayersFragmentDirections.actionPlayersFragmentToGameplayFragment())
                 viewModel.onGameScreenNavigated()
             }
         })
+    }
+
+    private fun createNameFields(numberOfPlayers: Int) {
+        if (numberOfPlayers !in 2..8)
+            throw IllegalArgumentException("Number of players not in range")
+
+        if (numberOfPlayers < 8) binding.etPlayer8.visibility = View.INVISIBLE
+        if (numberOfPlayers < 7) binding.etPlayer7.visibility = View.INVISIBLE
+        if (numberOfPlayers < 6) binding.etPlayer6.visibility = View.INVISIBLE
+        if (numberOfPlayers < 5) binding.etPlayer5.visibility = View.INVISIBLE
+        if (numberOfPlayers < 4) binding.etPlayer4.visibility = View.INVISIBLE
+        if (numberOfPlayers < 3) binding.etPlayer3.visibility = View.INVISIBLE
+
     }
 }

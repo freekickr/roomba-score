@@ -55,8 +55,8 @@ class GameSetupFragment: Fragment() {
 
     private fun observeEnterPlayersClicked() {
         viewModel.eventEnterPlayersNames.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                this.findNavController().navigate(GameSetupFragmentDirections.actionGameSetupFragmentToPlayersFragment())
+            if (it != -1) {
+                this.findNavController().navigate(GameSetupFragmentDirections.actionGameSetupFragmentToPlayersFragment(it))
                 viewModel.onEnterPlayersNamesNavigated()
             }
         })
