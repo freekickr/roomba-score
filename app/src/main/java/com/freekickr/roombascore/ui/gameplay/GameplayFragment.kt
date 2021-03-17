@@ -10,15 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.freekickr.roombascore.database.RoombaDatabase
 import com.freekickr.roombascore.databinding.FragmentGameplayBinding
-import com.freekickr.roombascore.utils.ViewModelFactory
+import com.freekickr.roombascore.ui.ViewModelFactory
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
 private const val TAG = "GameplayFragment"
 
-class GameplayFragment: Fragment() {
+class GameplayFragment : Fragment() {
 
     private lateinit var binding: FragmentGameplayBinding
 
@@ -44,20 +43,41 @@ class GameplayFragment: Fragment() {
 
         binding.viewModel = viewModel
 
-        observeGameEnded()
+        val args = GameplayFragmentArgs.fromBundle(requireArguments())
+        with(args.savedGameId) {
+            if (this == -1L) {
+                viewModel.createGame(args.players)
+            } else {
+                viewModel.loadGame(this)
+            }
+        }
+
+        observeCurrentGame()
+
+        observePreviousRound()
+
+        observeGameFinishEvent()
 
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "onViewCreated: ${viewModelFactory} ")
+    private fun observeCurrentGame() {
+        viewModel.currentGame.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "observeCurrentGame: $it")
+        })
     }
 
-    private fun observeGameEnded() {
+    private fun observePreviousRound() {
+        viewModel.previousRound.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "observePreviousRound: $it")
+        })
+    }
+
+    private fun observeGameFinishEvent() {
         viewModel.eventGameFinished.observe(viewLifecycleOwner, Observer {
             if (it) {
-                this.findNavController().navigate(GameplayFragmentDirections.actionGameplayFragmentToGameOverFragment())
+                this.findNavController()
+                    .navigate(GameplayFragmentDirections.actionGameplayFragmentToGameOverFragment())
                 viewModel.onGameOverNavigated()
             }
         })

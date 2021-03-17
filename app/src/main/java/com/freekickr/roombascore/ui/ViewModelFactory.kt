@@ -1,4 +1,4 @@
-package com.freekickr.roombascore.utils
+package com.freekickr.roombascore.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -18,11 +18,11 @@ class ViewModelFactory @Inject constructor(private val appDatabase: RoombaDataba
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return when(modelClass) {
             MainViewModel::class.java -> MainViewModel() as T
-            GameSetupViewModel::class.java -> GameSetupViewModel() as T
+            GameSetupViewModel::class.java -> GameSetupViewModel(appDatabase) as T
             PlayersViewModel::class.java -> PlayersViewModel() as T
-            GameplayViewModel::class.java -> GameplayViewModel() as T
+            GameplayViewModel::class.java -> GameplayViewModel(appDatabase) as T
             GameOverViewModel::class.java -> GameOverViewModel() as T
-            HighscoresViewModel::class.java -> HighscoresViewModel() as T
+            HighscoresViewModel::class.java -> HighscoresViewModel(appDatabase) as T
             else -> throw IllegalArgumentException("exception")
         }
     }

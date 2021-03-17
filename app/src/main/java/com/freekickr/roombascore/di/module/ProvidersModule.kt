@@ -4,7 +4,7 @@ import androidx.room.Room
 import com.freekickr.roombascore.App
 import com.freekickr.roombascore.database.RoombaDatabase
 import com.freekickr.roombascore.di.AppContext
-import com.freekickr.roombascore.utils.ViewModelFactory
+import com.freekickr.roombascore.ui.ViewModelFactory
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

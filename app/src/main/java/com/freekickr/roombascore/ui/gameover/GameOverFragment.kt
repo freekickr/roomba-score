@@ -10,9 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.freekickr.roombascore.database.RoombaDatabase
 import com.freekickr.roombascore.databinding.FragmentGameoverBinding
-import com.freekickr.roombascore.utils.ViewModelFactory
+import com.freekickr.roombascore.ui.ViewModelFactory
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
@@ -47,11 +46,6 @@ class GameOverFragment: Fragment() {
         observeQuitGame()
 
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "onViewCreated: ${viewModelFactory} ")
     }
 
     private fun observeQuitGame() {

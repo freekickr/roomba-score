@@ -6,12 +6,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.freekickr.roombascore.database.entities.Game
 import com.freekickr.roombascore.databinding.FragmentGameSetupBinding
-import com.freekickr.roombascore.utils.ViewModelFactory
+import com.freekickr.roombascore.ui.ViewModelFactory
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
@@ -43,14 +45,20 @@ class GameSetupFragment: Fragment() {
 
         binding.viewModel = viewModel
 
+        observeUnfinishedGameEvent()
+        
         observeEnterPlayersClicked()
 
         return binding.root
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "onViewCreated: $viewModelFactory")
+    
+    private fun observeUnfinishedGameEvent() {
+        viewModel.eventSavedGameFound.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "observeUnfinishedGameEvent: $it")
+            if (it != null) {
+                openUnfinishedGameAlertDialog(it)
+            }
+        })
     }
 
     private fun observeEnterPlayersClicked() {
@@ -60,5 +68,29 @@ class GameSetupFragment: Fragment() {
                 viewModel.onEnterPlayersNamesNavigated()
             }
         })
+    }
+
+    private fun openUnfinishedGameAlertDialog(game: Game) {
+        AlertDialog.Builder(requireContext())
+            .setMessage("Есть незаконченная игра")
+            .setTitle("Продолжить?")
+            .setPositiveButton("Конечно!") { dialogInterface, i ->
+                Log.d(TAG, "openUnfinishedGameAlertDialog: yes")
+                continueUnfinishedGame(game.id)
+                viewModel.savedGameEventReceived()
+            }
+            .setNegativeButton("Ни за что") { dialogInterface, i ->
+                Log.d(TAG, "openUnfinishedGameAlertDialog: no")
+                viewModel.finishOpenedGame(game)
+                viewModel.savedGameEventReceived()
+            }
+            .setCancelable(false)
+            .show()
+    }
+
+    private fun continueUnfinishedGame(gameId: Long) {
+        this.findNavController().navigate(GameSetupFragmentDirections.actionGameSetupFragmentToGameplayFragment(
+            arrayOf(), gameId)
+        )
     }
 }

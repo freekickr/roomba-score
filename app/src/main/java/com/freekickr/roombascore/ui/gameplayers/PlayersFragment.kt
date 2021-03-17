@@ -2,7 +2,6 @@ package com.freekickr.roombascore.ui.gameplayers
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.freekickr.roombascore.databinding.FragmentPlayersBinding
-import com.freekickr.roombascore.utils.ViewModelFactory
+import com.freekickr.roombascore.ui.ViewModelFactory
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
@@ -29,6 +28,8 @@ class PlayersFragment : Fragment() {
         ViewModelProvider(this, viewModelFactory).get(PlayersViewModel::class.java)
     }
 
+    private var numberOfPlayers: Int = 0
+
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -44,24 +45,25 @@ class PlayersFragment : Fragment() {
         binding.viewModel = viewModel
 
         val args = PlayersFragmentArgs.fromBundle(requireArguments())
-        createNameFields(args.numberOfPlayers)
+        numberOfPlayers = args.numberOfPlayers
+        createNameFields(numberOfPlayers)
 
         observeOnStartGameClicked()
 
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "onViewCreated: $viewModelFactory")
-    }
-
     private fun observeOnStartGameClicked() {
         viewModel.eventStartGame.observe(viewLifecycleOwner, Observer {
             if (it) {
-                this.findNavController()
-                    .navigate(PlayersFragmentDirections.actionPlayersFragmentToGameplayFragment())
-                viewModel.onGameScreenNavigated()
+                if (!viewModel.checkNamesForFilling(numberOfPlayers)) {
+                    Toast.makeText(requireContext(), "Заполни все поля", Toast.LENGTH_SHORT).show()
+                    viewModel.onGameScreenEventReceived()
+                } else {
+                    this.findNavController()
+                        .navigate(PlayersFragmentDirections.actionPlayersFragmentToGameplayFragment(viewModel.collectNames(), -1L))
+                    viewModel.onGameScreenEventReceived()
+                }
             }
         })
     }

@@ -30,6 +30,10 @@
             app:destination="@id/playersFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_gameSetupFragment_to_gameplayFragment"
+            app:destination="@id/gameplayFragment"
+            app:popUpTo="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/highscoresFragment"
@@ -58,6 +62,12 @@
             android:id="@+id/action_gameplayFragment_to_gameOverFragment"
             app:destination="@id/gameOverFragment"
             app:popUpTo="@id/mainFragment" />
+        <argument
+            android:name="players"
+            app:argType="string[]" />
+        <argument
+            android:name="savedGameId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/gameOverFragment"

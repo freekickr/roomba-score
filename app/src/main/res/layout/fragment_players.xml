@@ -31,65 +31,73 @@
                     android:id="@+id/etPlayer1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints="username"
                     android:hint="1 игрок"
                     android:inputType="textPersonName"
-                    android:autofillHints="username" />
+                    android:text="@={viewModel.name1}" />
 
                 <EditText
                     android:id="@+id/etPlayer2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints="username"
                     android:hint="2 игрок"
                     android:inputType="textPersonName"
-                    android:autofillHints="username" />
+                    android:text="@={viewModel.name2}" />
 
                 <EditText
                     android:id="@+id/etPlayer3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints="username"
                     android:hint="3 игрок"
                     android:inputType="textPersonName"
-                    android:autofillHints="username" />
+                    android:text="@={viewModel.name3}" />
 
                 <EditText
                     android:id="@+id/etPlayer4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints="username"
                     android:hint="4 игрок"
                     android:inputType="textPersonName"
-                    android:autofillHints="username" />
+                    android:text="@={viewModel.name4}" />
 
                 <EditText
                     android:id="@+id/etPlayer5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints="username"
                     android:hint="5 игрок"
                     android:inputType="textPersonName"
-                    android:autofillHints="username" />
+                    android:text="@={viewModel.name5}" />
 
                 <EditText
                     android:id="@+id/etPlayer6"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints="username"
                     android:hint="6 игрок"
                     android:inputType="textPersonName"
-                    android:autofillHints="username" />
+                    android:text="@={viewModel.name6}" />
 
                 <EditText
                     android:id="@+id/etPlayer7"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints="username"
                     android:hint="7 игрок"
                     android:inputType="textPersonName"
-                    android:autofillHints="username" />
+                    android:text="@={viewModel.name7}" />
 
                 <EditText
                     android:id="@+id/etPlayer8"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints="username"
                     android:hint="8 игрок"
                     android:inputType="textPersonName"
-                    android:autofillHints="username" />
+                    android:text="@={viewModel.name8}" />
 
             </LinearLayout>
 
