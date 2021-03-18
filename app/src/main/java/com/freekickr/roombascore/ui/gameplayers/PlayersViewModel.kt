@@ -3,6 +3,7 @@ package com.freekickr.roombascore.ui.gameplayers
 import android.util.Log
 import android.view.View
 import androidx.databinding.ObservableField
+import androidx.databinding.ObservableInt
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,12 +14,14 @@ class PlayersViewModel : ViewModel() {
 
     val name1 = ObservableField<String>()
     val name2 = ObservableField<String>()
-    val name3 = ObservableField<String>()
-    val name4 = ObservableField<String>()
-    val name5 = ObservableField<String>()
-    val name6 = ObservableField<String>()
-    val name7 = ObservableField<String>()
-    val name8 = ObservableField<String>()
+    val name3 = ObservableField<String?>()
+    val name4 = ObservableField<String?>()
+    val name5 = ObservableField<String?>()
+    val name6 = ObservableField<String?>()
+    val name7 = ObservableField<String?>()
+    val name8 = ObservableField<String?>()
+
+    val numberOfPlayers = ObservableInt(0)
 
     private val _eventStartGame = MutableLiveData<Boolean>()
     val eventStartGame: LiveData<Boolean>
@@ -35,7 +38,7 @@ class PlayersViewModel : ViewModel() {
             name7.get(),
             name8.get()
         )
-        Log.d(TAG, "collectNames: $result")
+        Log.d(TAG, "collectNames: ${result.toList()}")
         return result
     }
 

@@ -46,8 +46,7 @@ class PlayersFragment : Fragment() {
 
         val args = PlayersFragmentArgs.fromBundle(requireArguments())
         numberOfPlayers = args.numberOfPlayers
-        createNameFields(numberOfPlayers)
-
+        viewModel.numberOfPlayers.set(numberOfPlayers)
         observeOnStartGameClicked()
 
         return binding.root
@@ -61,23 +60,15 @@ class PlayersFragment : Fragment() {
                     viewModel.onGameScreenEventReceived()
                 } else {
                     this.findNavController()
-                        .navigate(PlayersFragmentDirections.actionPlayersFragmentToGameplayFragment(viewModel.collectNames(), -1L))
+                        .navigate(
+                            PlayersFragmentDirections.actionPlayersFragmentToGameplayFragment(
+                                viewModel.collectNames(),
+                                -1L
+                            )
+                        )
                     viewModel.onGameScreenEventReceived()
                 }
             }
         })
-    }
-
-    private fun createNameFields(numberOfPlayers: Int) {
-        if (numberOfPlayers !in 2..8)
-            throw IllegalArgumentException("Number of players not in range")
-
-        if (numberOfPlayers < 8) binding.etPlayer8.visibility = View.INVISIBLE
-        if (numberOfPlayers < 7) binding.etPlayer7.visibility = View.INVISIBLE
-        if (numberOfPlayers < 6) binding.etPlayer6.visibility = View.INVISIBLE
-        if (numberOfPlayers < 5) binding.etPlayer5.visibility = View.INVISIBLE
-        if (numberOfPlayers < 4) binding.etPlayer4.visibility = View.INVISIBLE
-        if (numberOfPlayers < 3) binding.etPlayer3.visibility = View.INVISIBLE
-
     }
 }

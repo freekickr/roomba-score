@@ -6,7 +6,6 @@ import com.freekickr.roombascore.database.dao.GamesDao
 import com.freekickr.roombascore.database.dao.RoundsDao
 import com.freekickr.roombascore.database.entities.Game
 import com.freekickr.roombascore.database.entities.Round
-import com.freekickr.roombascore.database.entities.Test
 
 @Database(entities = [Game::class, Round::class], version = 1, exportSchema = false)
 abstract class RoombaDatabase: RoomDatabase() {

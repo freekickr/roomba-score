@@ -8,6 +8,8 @@
         <variable
             name="viewModel"
             type="com.freekickr.roombascore.ui.gameplayers.PlayersViewModel" />
+
+        <import type="android.view.View"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,7 +54,8 @@
                     android:autofillHints="username"
                     android:hint="3 игрок"
                     android:inputType="textPersonName"
-                    android:text="@={viewModel.name3}" />
+                    android:text="@={viewModel.name3}"
+                    android:visibility="@{viewModel.numberOfPlayers > 2 ? View.VISIBLE : View.INVISIBLE}"/>
 
                 <EditText
                     android:id="@+id/etPlayer4"
@@ -61,7 +64,8 @@
                     android:autofillHints="username"
                     android:hint="4 игрок"
                     android:inputType="textPersonName"
-                    android:text="@={viewModel.name4}" />
+                    android:text="@={viewModel.name4}"
+                    android:visibility="@{viewModel.numberOfPlayers > 3 ? View.VISIBLE : View.INVISIBLE}"/>
 
                 <EditText
                     android:id="@+id/etPlayer5"
@@ -70,7 +74,8 @@
                     android:autofillHints="username"
                     android:hint="5 игрок"
                     android:inputType="textPersonName"
-                    android:text="@={viewModel.name5}" />
+                    android:text="@={viewModel.name5}"
+                    android:visibility="@{viewModel.numberOfPlayers > 4 ? View.VISIBLE : View.INVISIBLE}"/>
 
                 <EditText
                     android:id="@+id/etPlayer6"
@@ -79,7 +84,8 @@
                     android:autofillHints="username"
                     android:hint="6 игрок"
                     android:inputType="textPersonName"
-                    android:text="@={viewModel.name6}" />
+                    android:text="@={viewModel.name6}"
+                    android:visibility="@{viewModel.numberOfPlayers > 5 ? View.VISIBLE : View.INVISIBLE}"/>
 
                 <EditText
                     android:id="@+id/etPlayer7"
@@ -88,7 +94,8 @@
                     android:autofillHints="username"
                     android:hint="7 игрок"
                     android:inputType="textPersonName"
-                    android:text="@={viewModel.name7}" />
+                    android:text="@={viewModel.name7}"
+                    android:visibility="@{viewModel.numberOfPlayers > 6 ? View.VISIBLE : View.INVISIBLE}"/>
 
                 <EditText
                     android:id="@+id/etPlayer8"
@@ -97,7 +104,8 @@
                     android:autofillHints="username"
                     android:hint="8 игрок"
                     android:inputType="textPersonName"
-                    android:text="@={viewModel.name8}" />
+                    android:text="@={viewModel.name8}"
+                    android:visibility="@{viewModel.numberOfPlayers > 7 ? View.VISIBLE : View.INVISIBLE}"/>
 
             </LinearLayout>
 
