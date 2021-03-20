@@ -2,6 +2,7 @@ package com.freekickr.roombascore.ui.gameplayers
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,8 +29,6 @@ class PlayersFragment : Fragment() {
         ViewModelProvider(this, viewModelFactory).get(PlayersViewModel::class.java)
     }
 
-    private var numberOfPlayers: Int = 0
-
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -45,8 +44,9 @@ class PlayersFragment : Fragment() {
         binding.viewModel = viewModel
 
         val args = PlayersFragmentArgs.fromBundle(requireArguments())
-        numberOfPlayers = args.numberOfPlayers
-        viewModel.numberOfPlayers.set(numberOfPlayers)
+        args.let {
+            viewModel.setNumberOfPlayers(it.numberOfPlayers)
+        }
         observeOnStartGameClicked()
 
         return binding.root
@@ -55,14 +55,16 @@ class PlayersFragment : Fragment() {
     private fun observeOnStartGameClicked() {
         viewModel.eventStartGame.observe(viewLifecycleOwner, Observer {
             if (it) {
-                if (!viewModel.checkNamesForFilling(numberOfPlayers)) {
+                if (!viewModel.checkNamesForFilling()) {
                     Toast.makeText(requireContext(), "Заполни все поля", Toast.LENGTH_SHORT).show()
                     viewModel.onGameScreenEventReceived()
                 } else {
+                    val names = viewModel.collectNames()
+                    Log.d(TAG, "observeOnStartGameClicked: ${names.toList()}")
                     this.findNavController()
                         .navigate(
                             PlayersFragmentDirections.actionPlayersFragmentToGameplayFragment(
-                                viewModel.collectNames(),
+                                names,
                                 -1L
                             )
                         )

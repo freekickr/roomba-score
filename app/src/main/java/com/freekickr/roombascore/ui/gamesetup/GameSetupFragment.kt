@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.freekickr.roombascore.database.entities.Game
 import com.freekickr.roombascore.databinding.FragmentGameSetupBinding
 import com.freekickr.roombascore.ui.ViewModelFactory
+import com.freekickr.roombascore.ui.gamesetup.menu.PlayersListAdapter
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 

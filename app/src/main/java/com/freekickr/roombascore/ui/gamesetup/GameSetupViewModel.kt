@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.freekickr.roombascore.database.RoombaDatabase
 import com.freekickr.roombascore.database.entities.Game
+import com.freekickr.roombascore.ui.gamesetup.menu.OnPlayersNumberClickListener
+import com.freekickr.roombascore.ui.gamesetup.menu.PlayersListAdapter
 import kotlinx.coroutines.launch
 
 class GameSetupViewModel(private val database: RoombaDatabase) : ViewModel() {
@@ -21,6 +23,14 @@ class GameSetupViewModel(private val database: RoombaDatabase) : ViewModel() {
     private val _eventEnterPlayersNames = MutableLiveData<Int>()
     val eventEnterPlayersNames: LiveData<Int>
         get() = _eventEnterPlayersNames
+
+    private val onPlayersNumberClickListener = object : OnPlayersNumberClickListener {
+        override fun numberChoosen(number: Int) {
+            _eventEnterPlayersNames.postValue(number)
+        }
+    }
+
+    val menuAdapter = PlayersListAdapter(onPlayersNumberClickListener)
 
     private fun checkForUnfinishedGame() {
         viewModelScope.launch {
@@ -41,10 +51,6 @@ class GameSetupViewModel(private val database: RoombaDatabase) : ViewModel() {
 
     fun savedGameEventReceived() {
         _eventSavedGameFound.postValue(null)
-    }
-
-    fun onPlayersNumberClicked(nubmer: Int) {
-        _eventEnterPlayersNames.postValue(nubmer)
     }
 
     fun onEnterPlayersNamesNavigated() {
