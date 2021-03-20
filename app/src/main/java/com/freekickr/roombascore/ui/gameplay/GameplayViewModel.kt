@@ -52,7 +52,7 @@ class GameplayViewModel(private val database: RoombaDatabase) : ViewModel() {
         _eventGameFinished.postValue(false)
     }
 
-    fun loadGame(gameId: Long) {
+    fun loadGame(playersNum: Int, gameId: Long) {
         viewModelScope.launch {
             val game = database.gamesDao.getGameById(gameId)
             if (game != null) {
@@ -177,8 +177,9 @@ class GameplayViewModel(private val database: RoombaDatabase) : ViewModel() {
         return null
     }
 
-    fun createGame(players: Array<String>) {
+    fun createGame(playersNum: Int, players: Array<String>) {
         val newGame = Game(
+            numberOfPlayers = playersNum,
             name1 = if (players.size > 0) players[0] else "unknown player 1",
             name2 = if (players.size > 1) players[1] else "unknown player 2",
             name3 = if (players.size > 2) players[2] else null,

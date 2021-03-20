@@ -14,7 +14,6 @@ import androidx.navigation.fragment.findNavController
 import com.freekickr.roombascore.database.entities.Game
 import com.freekickr.roombascore.databinding.FragmentGameSetupBinding
 import com.freekickr.roombascore.ui.ViewModelFactory
-import com.freekickr.roombascore.ui.gamesetup.menu.PlayersListAdapter
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
@@ -77,7 +76,7 @@ class GameSetupFragment: Fragment() {
             .setTitle("Продолжить?")
             .setPositiveButton("Конечно!") { dialogInterface, i ->
                 Log.d(TAG, "openUnfinishedGameAlertDialog: yes")
-                continueUnfinishedGame(game.id)
+                continueUnfinishedGame(game.id, game.numberOfPlayers)
                 viewModel.savedGameEventReceived()
             }
             .setNegativeButton("Ни за что") { dialogInterface, i ->
@@ -89,9 +88,9 @@ class GameSetupFragment: Fragment() {
             .show()
     }
 
-    private fun continueUnfinishedGame(gameId: Long) {
+    private fun continueUnfinishedGame(gameId: Long, numberOfPlayers: Int) {
         this.findNavController().navigate(GameSetupFragmentDirections.actionGameSetupFragmentToGameplayFragment(
-            arrayOf(), gameId)
+            arrayOf(), gameId, numberOfPlayers)
         )
     }
 }

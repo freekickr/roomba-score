@@ -68,6 +68,9 @@
         <argument
             android:name="savedGameId"
             app:argType="long" />
+        <argument
+            android:name="numberOfPlayers"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/gameOverFragment"

@@ -10,8 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.freekickr.roombascore.database.entities.Game
-import com.freekickr.roombascore.database.entities.Round
 import com.freekickr.roombascore.databinding.FragmentGameplayBinding
 import com.freekickr.roombascore.ui.ViewModelFactory
 import dagger.android.support.AndroidSupportInjection
@@ -48,17 +46,13 @@ class GameplayFragment : Fragment() {
         val args = GameplayFragmentArgs.fromBundle(requireArguments())
         with(args.savedGameId) {
             if (this == -1L) {
-                viewModel.createGame(args.players)
+                viewModel.createGame(args.numberOfPlayers, args.players)
             } else {
-                viewModel.loadGame(this)
+                viewModel.loadGame(args.numberOfPlayers, this)
             }
         }
 
         observeCurrentGame()
-
-        observeNumberOfPlayers()
-
-        observePlayerLost()
 
         observePreviousRound()
 
@@ -70,40 +64,40 @@ class GameplayFragment : Fragment() {
     private fun observeCurrentGame() {
         viewModel.currentGame.observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "observeCurrentGame: $it")
-            fillNames(it)
+//            fillNames(it)
         })
     }
 
-    private fun observeNumberOfPlayers() {
-        viewModel.numberOfPlayers.observe(viewLifecycleOwner, Observer {
-            if (it < 8) binding.cvPlayer8.visibility = View.INVISIBLE
-            if (it < 7) binding.cvPlayer7.visibility = View.INVISIBLE
-            if (it < 6) binding.cvPlayer6.visibility = View.INVISIBLE
-            if (it < 5) binding.cvPlayer5.visibility = View.INVISIBLE
-            if (it < 4) binding.cvPlayer4.visibility = View.INVISIBLE
-            if (it < 3) binding.cvPlayer3.visibility = View.INVISIBLE
-        })
-    }
-
-    private fun observePlayerLost() {
-        viewModel.eventPlayerLost.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                1 -> {binding.cvPlayer1.visibility = View.GONE}
-                2 -> {binding.cvPlayer2.visibility = View.GONE}
-                3 -> {binding.cvPlayer3.visibility = View.GONE}
-                4 -> {binding.cvPlayer4.visibility = View.GONE}
-                5 -> {binding.cvPlayer5.visibility = View.GONE}
-                6 -> {binding.cvPlayer6.visibility = View.GONE}
-                7 -> {binding.cvPlayer7.visibility = View.GONE}
-                8 -> {binding.cvPlayer8.visibility = View.GONE}
-            }
-        })
-    }
+//    private fun observeNumberOfPlayers() {
+//        viewModel.numberOfPlayers.observe(viewLifecycleOwner, Observer {
+//            if (it < 8) binding.cvPlayer8.visibility = View.INVISIBLE
+//            if (it < 7) binding.cvPlayer7.visibility = View.INVISIBLE
+//            if (it < 6) binding.cvPlayer6.visibility = View.INVISIBLE
+//            if (it < 5) binding.cvPlayer5.visibility = View.INVISIBLE
+//            if (it < 4) binding.cvPlayer4.visibility = View.INVISIBLE
+//            if (it < 3) binding.cvPlayer3.visibility = View.INVISIBLE
+//        })
+//    }
+//
+//    private fun observePlayerLost() {
+//        viewModel.eventPlayerLost.observe(viewLifecycleOwner, Observer {
+//            when(it) {
+//                1 -> {binding.cvPlayer1.visibility = View.GONE}
+//                2 -> {binding.cvPlayer2.visibility = View.GONE}
+//                3 -> {binding.cvPlayer3.visibility = View.GONE}
+//                4 -> {binding.cvPlayer4.visibility = View.GONE}
+//                5 -> {binding.cvPlayer5.visibility = View.GONE}
+//                6 -> {binding.cvPlayer6.visibility = View.GONE}
+//                7 -> {binding.cvPlayer7.visibility = View.GONE}
+//                8 -> {binding.cvPlayer8.visibility = View.GONE}
+//            }
+//        })
+//    }
 
     private fun observePreviousRound() {
         viewModel.previousRound.observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "observePreviousRound: $it")
-            fillPreviousRound(it)
+//            fillPreviousRound(it)
         })
     }
 
@@ -117,26 +111,26 @@ class GameplayFragment : Fragment() {
         })
     }
 
-    private fun fillPreviousRound(round: Round) {
-        binding.tv1PlayerHistory.text = round.score1.toString()
-        binding.tv2PlayerHistory.text = round.score2.toString()
-        round.score3?.let { binding.tv3PlayerHistory.text = it.toString() }
-        round.score4?.let { binding.tv4PlayerHistory.text = it.toString() }
-        round.score5?.let { binding.tv5PlayerHistory.text = it.toString() }
-        round.score6?.let { binding.tv6PlayerHistory.text = it.toString() }
-        round.score7?.let { binding.tv7PlayerHistory.text = it.toString() }
-        round.score8?.let { binding.tv8PlayerHistory.text = it.toString() }
-    }
-
-    private fun fillNames(game: Game) {
-        binding.tv1PlayerName.text = game.name1
-        binding.tv2PlayerName.text = game.name2
-        game.name3?.let { binding.tv3PlayerName.text = it }
-        game.name4?.let { binding.tv4PlayerName.text = it }
-        game.name5?.let { binding.tv5PlayerName.text = it }
-        game.name6?.let { binding.tv6PlayerName.text = it }
-        game.name7?.let { binding.tv7PlayerName.text = it }
-        game.name8?.let { binding.tv8PlayerName.text = it }
-    }
+//    private fun fillPreviousRound(round: Round) {
+//        binding.tv1PlayerHistory.text = round.score1.toString()
+//        binding.tv2PlayerHistory.text = round.score2.toString()
+//        round.score3?.let { binding.tv3PlayerHistory.text = it.toString() }
+//        round.score4?.let { binding.tv4PlayerHistory.text = it.toString() }
+//        round.score5?.let { binding.tv5PlayerHistory.text = it.toString() }
+//        round.score6?.let { binding.tv6PlayerHistory.text = it.toString() }
+//        round.score7?.let { binding.tv7PlayerHistory.text = it.toString() }
+//        round.score8?.let { binding.tv8PlayerHistory.text = it.toString() }
+//    }
+//
+//    private fun fillNames(game: Game) {
+//        binding.tv1PlayerName.text = game.name1
+//        binding.tv2PlayerName.text = game.name2
+//        game.name3?.let { binding.tv3PlayerName.text = it }
+//        game.name4?.let { binding.tv4PlayerName.text = it }
+//        game.name5?.let { binding.tv5PlayerName.text = it }
+//        game.name6?.let { binding.tv6PlayerName.text = it }
+//        game.name7?.let { binding.tv7PlayerName.text = it }
+//        game.name8?.let { binding.tv8PlayerName.text = it }
+//    }
 
 }

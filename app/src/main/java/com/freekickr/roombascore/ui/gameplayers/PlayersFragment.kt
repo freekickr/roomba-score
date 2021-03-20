@@ -29,6 +29,8 @@ class PlayersFragment : Fragment() {
         ViewModelProvider(this, viewModelFactory).get(PlayersViewModel::class.java)
     }
 
+    private var numbersOfPlayers: Int = -1
+
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -45,6 +47,7 @@ class PlayersFragment : Fragment() {
 
         val args = PlayersFragmentArgs.fromBundle(requireArguments())
         args.let {
+            numbersOfPlayers = it.numberOfPlayers
             viewModel.setNumberOfPlayers(it.numberOfPlayers)
         }
         observeOnStartGameClicked()
@@ -65,7 +68,8 @@ class PlayersFragment : Fragment() {
                         .navigate(
                             PlayersFragmentDirections.actionPlayersFragmentToGameplayFragment(
                                 names,
-                                -1L
+                                -1L,
+                                numbersOfPlayers
                             )
                         )
                     viewModel.onGameScreenEventReceived()
