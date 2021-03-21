@@ -12,9 +12,9 @@ import com.freekickr.roombascore.R
 
 class GamePlayersAdapter(): RecyclerView.Adapter<GamePlayersAdapter.GamePlayersViewHolder>() {
 
-    private val numberOfPlayers: Int = 0
+    private var numberOfPlayers: Int = 0
 
-    private var players = mutableListOf<Player>()
+    private var players = listOf<Player>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GamePlayersViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_gameplay_player, parent, false)
@@ -27,8 +27,17 @@ class GamePlayersAdapter(): RecyclerView.Adapter<GamePlayersAdapter.GamePlayersV
 
     override fun getItemCount() = players.size
 
-    fun setPlayers(newPlayers: MutableList<Player>) {
+    fun setPlayers(
+        newPlayers: List<Player>,
+        numberOfPlayers: Int
+    ) {
+        this.numberOfPlayers = numberOfPlayers
         players = newPlayers
+        notifyDataSetChanged()
+    }
+
+    fun fillNewData(data: List<Player>) {
+        players = data
         notifyDataSetChanged()
     }
 

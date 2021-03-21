@@ -1,7 +1,6 @@
 package com.freekickr.roombascore.ui.gameplay
 
 import android.util.Log
-import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,14 +14,14 @@ private const val TAG = "GameplayViewModel"
 
 class GameplayViewModel(private val database: RoombaDatabase) : ViewModel() {
 
-    val score1 = ObservableField<String>()
-    val score2 = ObservableField<String>()
-    val score3 = ObservableField<String?>()
-    val score4 = ObservableField<String?>()
-    val score5 = ObservableField<String?>()
-    val score6 = ObservableField<String?>()
-    val score7 = ObservableField<String?>()
-    val score8 = ObservableField<String?>()
+//    val score1 = ObservableField<String>()
+//    val score2 = ObservableField<String>()
+//    val score3 = ObservableField<String?>()
+//    val score4 = ObservableField<String?>()
+//    val score5 = ObservableField<String?>()
+//    val score6 = ObservableField<String?>()
+//    val score7 = ObservableField<String?>()
+//    val score8 = ObservableField<String?>()
 
     private val _currentGame = MutableLiveData<Game>()
     val currentGame: LiveData<Game>
@@ -32,9 +31,9 @@ class GameplayViewModel(private val database: RoombaDatabase) : ViewModel() {
     val previousRound: LiveData<Round>
         get() = _previousRound
 
-    private val _numberOfPlayers = MutableLiveData<Int>()
-    val numberOfPlayers: LiveData<Int>
-        get() = _numberOfPlayers
+//    private val _numberOfPlayers = MutableLiveData<Int>()
+//    val numberOfPlayers: LiveData<Int>
+//        get() = _numberOfPlayers
 
     private val _eventGameFinished = MutableLiveData<Boolean>()
     val eventGameFinished: LiveData<Boolean>
@@ -44,6 +43,8 @@ class GameplayViewModel(private val database: RoombaDatabase) : ViewModel() {
     val eventPlayerLost: LiveData<Int>
         get() = _eventPlayerLost
 
+    val adapter = GamePlayersAdapter()
+
     fun onGameFinished() {
         _eventGameFinished.postValue(true)
     }
@@ -52,12 +53,51 @@ class GameplayViewModel(private val database: RoombaDatabase) : ViewModel() {
         _eventGameFinished.postValue(false)
     }
 
+    fun initAdapter(game: Game) {
+        adapter.setPlayers(collectPlayers(game), game.numberOfPlayers)
+    }
+
+    fun fillAdapter(round: Round) {
+        adapter.fillNewData(collectScores(round))
+    }
+
+    private fun collectScores(round: Round): List<Player> {
+        val result = mutableListOf<Player>()
+        currentGame.value?.let {
+            result.add(Player(it.name1, round.score1))
+            result.add(Player(it.name2, round.score2))
+            val numberOfPlayers = it.numberOfPlayers
+
+            if (numberOfPlayers > 2) result.add(Player(it.name3 ?: "unknown", round.score3 ?: -1))
+            if (numberOfPlayers > 3) result.add(Player(it.name4 ?: "unknown", round.score4 ?: -1))
+            if (numberOfPlayers > 4) result.add(Player(it.name5 ?: "unknown", round.score5 ?: -1))
+            if (numberOfPlayers > 5) result.add(Player(it.name6 ?: "unknown", round.score6 ?: -1))
+            if (numberOfPlayers > 6) result.add(Player(it.name7 ?: "unknown", round.score7 ?: -1))
+            if (numberOfPlayers > 7) result.add(Player(it.name8 ?: "unknown", round.score8 ?: -1))
+        }
+        return result.toList()
+    }
+
+    private fun collectPlayers(game: Game): List<Player> {
+        val result = mutableListOf<Player>()
+        val numberOfPlayers = game.numberOfPlayers
+        result.add(Player(game.name1, 0))
+        result.add(Player(game.name2, 0))
+        if (numberOfPlayers > 2) Player(game.name3 ?: "unknown player", 0)
+        if (numberOfPlayers > 3) Player(game.name4 ?: "unknown player", 0)
+        if (numberOfPlayers > 4) Player(game.name5 ?: "unknown player", 0)
+        if (numberOfPlayers > 5) Player(game.name6 ?: "unknown player", 0)
+        if (numberOfPlayers > 6) Player(game.name7 ?: "unknown player", 0)
+        if (numberOfPlayers > 7) Player(game.name8 ?: "unknown player", 0)
+        return result
+    }
+
     fun loadGame(playersNum: Int, gameId: Long) {
         viewModelScope.launch {
             val game = database.gamesDao.getGameById(gameId)
             if (game != null) {
                 _currentGame.postValue(game)
-                _numberOfPlayers.postValue(defineNumberOfPlayers(game))
+//                _numberOfPlayers.postValue(defineNumberOfPlayers(game))
                 val lastFoundRound = database.roundsDao.getLastRoundForGame(gameId)
                 if (lastFoundRound != null) {
                     _previousRound.postValue(lastFoundRound)
@@ -95,8 +135,8 @@ class GameplayViewModel(private val database: RoombaDatabase) : ViewModel() {
                     throw IllegalStateException("Round was generated and inserted but cant get")
                 } else {
                     _previousRound.postValue(previousRound)
-                    checkPlayersForFinish()
-                    clearEditTexts()
+//                    checkPlayersForFinish()
+//                    clearEditTexts()
                 }
             }
         }
@@ -115,16 +155,16 @@ class GameplayViewModel(private val database: RoombaDatabase) : ViewModel() {
         }
     }
 
-    private fun clearEditTexts() {
-        score1.set(null)
-        score2.set(null)
-        score3.set(null)
-        score4.set(null)
-        score5.set(null)
-        score6.set(null)
-        score7.set(null)
-        score8.set(null)
-    }
+//    private fun clearEditTexts() {
+//        score1.set(null)
+//        score2.set(null)
+//        score3.set(null)
+//        score4.set(null)
+//        score5.set(null)
+//        score6.set(null)
+//        score7.set(null)
+//        score8.set(null)
+//    }
 
     private fun generateRound(roundNumber: Int): Round? {
         val game = currentGame.value
@@ -180,8 +220,8 @@ class GameplayViewModel(private val database: RoombaDatabase) : ViewModel() {
     fun createGame(playersNum: Int, players: Array<String>) {
         val newGame = Game(
             numberOfPlayers = playersNum,
-            name1 = if (players.size > 0) players[0] else "unknown player 1",
-            name2 = if (players.size > 1) players[1] else "unknown player 2",
+            name1 = players[0],
+            name2 = players[1],
             name3 = if (players.size > 2) players[2] else null,
             name4 = if (players.size > 3) players[3] else null,
             name5 = if (players.size > 4) players[4] else null,
@@ -189,7 +229,6 @@ class GameplayViewModel(private val database: RoombaDatabase) : ViewModel() {
             name7 = if (players.size > 6) players[6] else null,
             name8 = if (players.size > 7) players[7] else null
         )
-        _numberOfPlayers.postValue(defineNumberOfPlayers(newGame))
         Log.d(TAG, "createGame: $newGame")
         viewModelScope.launch {
             val gameId = database.gamesDao.insert(newGame)

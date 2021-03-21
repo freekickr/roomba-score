@@ -64,6 +64,7 @@ class GameplayFragment : Fragment() {
     private fun observeCurrentGame() {
         viewModel.currentGame.observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "observeCurrentGame: $it")
+            viewModel.initAdapter(it)
 //            fillNames(it)
         })
     }
@@ -97,6 +98,7 @@ class GameplayFragment : Fragment() {
     private fun observePreviousRound() {
         viewModel.previousRound.observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "observePreviousRound: $it")
+            viewModel.fillAdapter(it)
 //            fillPreviousRound(it)
         })
     }
