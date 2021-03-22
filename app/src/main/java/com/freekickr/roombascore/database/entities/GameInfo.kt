@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "games_table")
-data class Game(
+data class GameInfo(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
     val numberOfPlayers: Int,

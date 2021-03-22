@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "rounds_table")
-data class Round(
+data class RoundHistory(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
 

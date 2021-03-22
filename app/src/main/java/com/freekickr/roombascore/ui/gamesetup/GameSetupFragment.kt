@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.freekickr.roombascore.database.entities.Game
+import com.freekickr.roombascore.database.entities.GameInfo
 import com.freekickr.roombascore.databinding.FragmentGameSetupBinding
 import com.freekickr.roombascore.ui.ViewModelFactory
 import dagger.android.support.AndroidSupportInjection
@@ -70,7 +70,7 @@ class GameSetupFragment: Fragment() {
         })
     }
 
-    private fun openUnfinishedGameAlertDialog(game: Game) {
+    private fun openUnfinishedGameAlertDialog(game: GameInfo) {
         AlertDialog.Builder(requireContext())
             .setMessage("Есть незаконченная игра")
             .setTitle("Продолжить?")

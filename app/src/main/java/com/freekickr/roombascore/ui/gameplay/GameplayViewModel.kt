@@ -1,224 +1,121 @@
 package com.freekickr.roombascore.ui.gameplay
 
 import android.util.Log
+import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.freekickr.roombascore.database.RoombaDatabase
-import com.freekickr.roombascore.database.entities.Game
-import com.freekickr.roombascore.database.entities.Round
+import com.freekickr.roombascore.database.entities.GameInfo
+import com.freekickr.roombascore.database.entities.GameScores
+import com.freekickr.roombascore.database.entities.RoundHistory
 import kotlinx.coroutines.launch
 
 private const val TAG = "GameplayViewModel"
 
 class GameplayViewModel(private val database: RoombaDatabase) : ViewModel() {
 
-//    val score1 = ObservableField<String>()
-//    val score2 = ObservableField<String>()
-//    val score3 = ObservableField<String?>()
-//    val score4 = ObservableField<String?>()
-//    val score5 = ObservableField<String?>()
-//    val score6 = ObservableField<String?>()
-//    val score7 = ObservableField<String?>()
-//    val score8 = ObservableField<String?>()
+    val etScore1 = ObservableField<String>()
+    val etScore2 = ObservableField<String>()
+    val etScore3 = ObservableField<String?>()
+    val etScore4 = ObservableField<String?>()
+    val etScore5 = ObservableField<String?>()
+    val etScore6 = ObservableField<String?>()
+    val etScore7 = ObservableField<String?>()
+    val etScore8 = ObservableField<String?>()
 
-    private val _currentGame = MutableLiveData<Game>()
-    val currentGame: LiveData<Game>
+    private val _currentGame = MutableLiveData<GameInfo>()
+    val currentGame: LiveData<GameInfo>
         get() = _currentGame
-
-    private val _previousRound = MutableLiveData<Round>()
-    val previousRound: LiveData<Round>
-        get() = _previousRound
-
-//    private val _numberOfPlayers = MutableLiveData<Int>()
-//    val numberOfPlayers: LiveData<Int>
-//        get() = _numberOfPlayers
 
     private val _eventGameFinished = MutableLiveData<Boolean>()
     val eventGameFinished: LiveData<Boolean>
         get() = _eventGameFinished
 
-    private val _eventPlayerLost = MutableLiveData<Int>()
-    val eventPlayerLost: LiveData<Int>
+    private val _eventPlayerLost = MutableLiveData<List<Int>>()
+    val eventPlayerLost: LiveData<List<Int>>
         get() = _eventPlayerLost
 
-    val adapter = GamePlayersAdapter()
-
     fun onGameFinished() {
-        _eventGameFinished.postValue(true)
+        currentGame.value?.let { currentGame ->
+                currentGame.finished = true
+                viewModelScope.launch {
+                    database.gamesDao.update(currentGame)
+                }
+                _eventGameFinished.postValue(true)
+            }
     }
 
     fun onGameOverNavigated() {
         _eventGameFinished.postValue(false)
     }
 
-    fun initAdapter(game: Game) {
-        adapter.setPlayers(collectPlayers(game), game.numberOfPlayers)
-    }
-
-    fun fillAdapter(round: Round) {
-        adapter.fillNewData(collectScores(round))
-    }
-
-    private fun collectScores(round: Round): List<Player> {
-        val result = mutableListOf<Player>()
-        currentGame.value?.let {
-            result.add(Player(it.name1, round.score1))
-            result.add(Player(it.name2, round.score2))
-            val numberOfPlayers = it.numberOfPlayers
-
-            if (numberOfPlayers > 2) result.add(Player(it.name3 ?: "unknown", round.score3 ?: -1))
-            if (numberOfPlayers > 3) result.add(Player(it.name4 ?: "unknown", round.score4 ?: -1))
-            if (numberOfPlayers > 4) result.add(Player(it.name5 ?: "unknown", round.score5 ?: -1))
-            if (numberOfPlayers > 5) result.add(Player(it.name6 ?: "unknown", round.score6 ?: -1))
-            if (numberOfPlayers > 6) result.add(Player(it.name7 ?: "unknown", round.score7 ?: -1))
-            if (numberOfPlayers > 7) result.add(Player(it.name8 ?: "unknown", round.score8 ?: -1))
-        }
-        return result.toList()
-    }
-
-    private fun collectPlayers(game: Game): List<Player> {
-        val result = mutableListOf<Player>()
-        val numberOfPlayers = game.numberOfPlayers
-        result.add(Player(game.name1, 0))
-        result.add(Player(game.name2, 0))
-        if (numberOfPlayers > 2) Player(game.name3 ?: "unknown player", 0)
-        if (numberOfPlayers > 3) Player(game.name4 ?: "unknown player", 0)
-        if (numberOfPlayers > 4) Player(game.name5 ?: "unknown player", 0)
-        if (numberOfPlayers > 5) Player(game.name6 ?: "unknown player", 0)
-        if (numberOfPlayers > 6) Player(game.name7 ?: "unknown player", 0)
-        if (numberOfPlayers > 7) Player(game.name8 ?: "unknown player", 0)
-        return result
-    }
-
-    fun loadGame(playersNum: Int, gameId: Long) {
+    fun loadGame(gameId: Long) {
         viewModelScope.launch {
             val game = database.gamesDao.getGameById(gameId)
             if (game != null) {
                 _currentGame.postValue(game)
-//                _numberOfPlayers.postValue(defineNumberOfPlayers(game))
-                val lastFoundRound = database.roundsDao.getLastRoundForGame(gameId)
-                if (lastFoundRound != null) {
-                    _previousRound.postValue(lastFoundRound)
-                } else {
-                    throw IllegalStateException("Unable to load last round")
-                }
             } else {
                 throw IllegalStateException("Unable to load game")
             }
         }
     }
 
-    private fun defineNumberOfPlayers(game: Game): Int {
-        var result = 2
-        with(game) {
-            if (name3 != null) result++
-            if (name4 != null) result++
-            if (name5 != null) result++
-            if (name6 != null) result++
-            if (name7 != null) result++
-            if (name8 != null) result++
-        }
-        return result
+    fun getGameScores(gameId: Long) = database.gameScoresDao.getGameScoresByGameId(gameId)
+
+    fun checkPlayersForFinish(gameScore: GameScores) {
+        val result = mutableListOf<Int>()
+
+        gameScore.score1.let { if (it > 100) result.add(1) }
+        gameScore.score2.let { if (it > 100) result.add(2) }
+        gameScore.score3?.let { if (it > 100) result.add(3) }
+        gameScore.score4?.let { if (it > 100) result.add(4) }
+        gameScore.score5?.let { if (it > 100) result.add(5) }
+        gameScore.score6?.let { if (it > 100) result.add(6) }
+        gameScore.score7?.let { if (it > 100) result.add(7) }
+        gameScore.score8?.let { if (it > 100) result.add(8) }
+
+        _eventPlayerLost.postValue(result)
     }
 
-    private fun insertRound(roundNumber: Int) {
-        val round = generateRound(roundNumber)
-        if (round == null) {
-            throw IllegalArgumentException("Round wasn't generated")
-        } else {
-            viewModelScope.launch {
-                val roundId = database.roundsDao.insert(round)
-                val previousRound = database.roundsDao.getRoundById(roundId)
-                if (previousRound == null) {
-                    throw IllegalStateException("Round was generated and inserted but cant get")
-                } else {
-                    _previousRound.postValue(previousRound)
-//                    checkPlayersForFinish()
-//                    clearEditTexts()
-                }
-            }
+    fun clearEditTexts() {
+        currentGame.value?.let {
+            etScore1.set("")
+            etScore2.set("")
+            etScore3.set(if (it.name3 != null) "" else null)
+            etScore4.set(if (it.name4 != null) "" else null)
+            etScore5.set(if (it.name5 != null) "" else null)
+            etScore6.set(if (it.name6 != null) "" else null)
+            etScore7.set(if (it.name7 != null) "" else null)
+            etScore8.set(if (it.name8 != null) "" else null)
         }
     }
 
-    private fun checkPlayersForFinish() {
-        previousRound.value?.let {
-            if (it.score1 > 100) _eventPlayerLost.postValue(2)
-            if (it.score2 > 100) _eventPlayerLost.postValue(2)
-            if (it.score3 != null && it.score3 > 100) _eventPlayerLost.postValue(3)
-            if (it.score4 != null && it.score4 > 100) _eventPlayerLost.postValue(4)
-            if (it.score5 != null && it.score5 > 100) _eventPlayerLost.postValue(5)
-            if (it.score6 != null && it.score6 > 100) _eventPlayerLost.postValue(6)
-            if (it.score7 != null && it.score7 > 100) _eventPlayerLost.postValue(7)
-            if (it.score8 != null && it.score8 > 100) _eventPlayerLost.postValue(8)
-        }
-    }
-
-//    private fun clearEditTexts() {
-//        score1.set(null)
-//        score2.set(null)
-//        score3.set(null)
-//        score4.set(null)
-//        score5.set(null)
-//        score6.set(null)
-//        score7.set(null)
-//        score8.set(null)
-//    }
-
-    private fun generateRound(roundNumber: Int): Round? {
-        val game = currentGame.value
-        game?.let { curGame ->
-            val prevRound = previousRound.value
-            if (prevRound == null) {
-                return Round(
-                    gameId = curGame.id,
-                    round = roundNumber,
-                    score1 = score1.get()?.toIntOrNull() ?: 0,
-                    score2 = score2.get()?.toIntOrNull() ?: 0,
-                    score3 = score3.get()?.toIntOrNull(),
-                    score4 = score4.get()?.toIntOrNull(),
-                    score5 = score5.get()?.toIntOrNull(),
-                    score6 = score6.get()?.toIntOrNull(),
-                    score7 = score7.get()?.toIntOrNull(),
-                    score8 = score8.get()?.toIntOrNull(),
+    fun saveRound(gameScores: GameScores) {
+        currentGame.value?.let { currentGame ->
+            gameScores.let { scores ->
+                val round = RoundHistory(
+                    gameId = currentGame.id,
+                    round = scores.roundCount,
+                    score1 = scores.score1,
+                    score2 = scores.score2,
+                    score3 = scores.score3,
+                    score4 = scores.score4,
+                    score5 = scores.score5,
+                    score6 = scores.score6,
+                    score7 = scores.score7,
+                    score8 = scores.score8,
                 )
-            } else {
-                numberOfPlayers.value?.let {
-                    val prevScore1 = prevRound.score1
-                    val prevScore2 = prevRound.score2
-                    val prevScore3 = prevRound.score3
-                    val prevScore4 = prevRound.score4
-                    val prevScore5 = prevRound.score5
-                    val prevScore6 = prevRound.score6
-                    val prevScore7 = prevRound.score7
-                    val prevScore8 = prevRound.score8
-                    return Round(
-                        gameId = curGame.id,
-                        round = roundNumber,
-                        score1 = (score1.get()?.toInt() ?: 0) + prevScore1,
-                        score2 = (score2.get()?.toInt() ?: 0) + prevScore2,
-                        score3 = if (it > 2) (score3.get()?.toIntOrNull()
-                            ?: 0) + prevScore3!! else null,
-                        score4 = if (it > 3) (score4.get()?.toIntOrNull()
-                            ?: 0) + prevScore4!! else null,
-                        score5 = if (it > 4) (score5.get()?.toIntOrNull()
-                            ?: 0) + prevScore5!! else null,
-                        score6 = if (it > 5) (score6.get()?.toIntOrNull()
-                            ?: 0) + prevScore6!! else null,
-                        score7 = if (it > 6) (score7.get()?.toIntOrNull()
-                            ?: 0) + prevScore7!! else null,
-                        score8 = if (it > 7) (score8.get()?.toIntOrNull()
-                            ?: 0) + prevScore8!! else null,
-                    )
+                viewModelScope.launch {
+                    database.roundsDao.insert(round)
                 }
             }
         }
-        return null
     }
 
     fun createGame(playersNum: Int, players: Array<String>) {
-        val newGame = Game(
+        val newGame = GameInfo(
             numberOfPlayers = playersNum,
             name1 = players[0],
             name2 = players[1],
@@ -231,32 +128,111 @@ class GameplayViewModel(private val database: RoombaDatabase) : ViewModel() {
         )
         Log.d(TAG, "createGame: $newGame")
         viewModelScope.launch {
-            val gameId = database.gamesDao.insert(newGame)
-            val insertedGame = database.gamesDao.getGameById(gameId)
+            val newGameId = database.gamesDao.insert(newGame)
+            val insertedGame = database.gamesDao.getGameById(newGameId)
             Log.d(TAG, "createGame: $insertedGame")
-            if (insertedGame == null) {
-                throw IllegalArgumentException("Game was created but database return null")
+            if (insertedGame != null) {
+                val newScores = GameScores(
+                    gameId = newGameId,
+                    score1 = 0,
+                    score2 = 0,
+                    score3 = if (insertedGame.name3 != null) 0 else null,
+                    score4 = if (insertedGame.name4 != null) 0 else null,
+                    score5 = if (insertedGame.name5 != null) 0 else null,
+                    score6 = if (insertedGame.name6 != null) 0 else null,
+                    score7 = if (insertedGame.name7 != null) 0 else null,
+                    score8 = if (insertedGame.name8 != null) 0 else null,
+                    roundCount = 0
+                )
+                val insertedScoresId = database.gameScoresDao.insert(newScores)
+                val insertedScores = database.gameScoresDao.getGameScoresById(insertedScoresId)
+                if (insertedScores != null) {
+                    _currentGame.postValue(insertedGame)
+                } else {
+                    throw IllegalArgumentException("Game was created and saved but scores not")
+                }
             } else {
-                _currentGame.postValue(insertedGame)
+                throw IllegalArgumentException("Game was created but database return null")
             }
         }
     }
 
 
     fun onRoundFinished() {
-        previousRound.value.let {
-            if (it == null) {
-                insertRound(1)
-            } else {
-                insertRound(it.round + 1)
+        currentGame.value?.let {
+            viewModelScope.launch {
+                updateScores()
             }
         }
-        //TODO Collect round
-        //TODO Insert collected round
-        //TODO Get inserted round
-        //TODO Check all values for 100
-        //TODO If 100 Find Player and finish game
-        //TODO Else fill previous round and clear current
+    }
+
+    private fun updateScores() {
+        currentGame.value?.let { game ->
+            viewModelScope.launch {
+               database.gameScoresDao.getGameScoresByGameIdSimple(game.id)?.let {
+                   Log.d(TAG, "updateScores: $it")
+                   it.score1 += (etScore1.get()?.toIntOrNull() ?: 0)
+                   it.score2 += (etScore2.get()?.toIntOrNull() ?: 0)
+                   it.score3 = it.score3?.plus((etScore3.get()?.toIntOrNull() ?: 0))
+                   it.score4 = it.score4?.plus((etScore4.get()?.toIntOrNull() ?: 0))
+                   it.score5 = it.score5?.plus((etScore5.get()?.toIntOrNull() ?: 0))
+                   it.score6 = it.score6?.plus((etScore6.get()?.toIntOrNull() ?: 0))
+                   it.score7 = it.score7?.plus((etScore7.get()?.toIntOrNull() ?: 0))
+                   it.score8 = it.score8?.plus((etScore8.get()?.toIntOrNull() ?: 0))
+                   it.roundCount += 1
+                   database.gameScoresDao.update(it)
+                }
+            }
+        }
+    }
+
+    fun checkRoundForEndGame(scores: GameScores) {
+//        var winningName: String
+//
+//        var winningCount: Int = 0
+//        scores.let { highScores ->
+//            if (highScores.score1 < 100) {
+////                winningName = highScores.name1
+//                winningCount++
+//            }
+//            if (highScores.score2 < 100) {
+////                winningName = highScores.name2
+//                winningCount++
+//            }
+//            if (highScores.score3 != null && highScores.score3!! < 100) {
+////                winningName = highScores.name3 ?: "unknown player 3"
+//                winningCount++
+//            }
+//            if (highScores.score4 != null && highScores.score4!! < 100) {
+////                winningName = highScores.name3 ?: "unknown player 4"
+//                winningCount++
+//            }
+//            if (highScores.score5 != null && highScores.score5!! < 100) {
+////                winningName = highScores.name4 ?: "unknown player 5"
+//                winningCount++
+//            }
+//            if (highScores.score6 != null && highScores.score6!! < 100) {
+////                winningName = highScores.name5 ?: "unknown player 6"
+//                winningCount++
+//            }
+//            if (highScores.score7 != null && highScores.score7!! < 100) {
+////                winningName = highScores.name5 ?: "unknown player 7"
+//                winningCount++
+//            }
+//            if (highScores.score8 != null && highScores.score8!! < 100) {
+////                winningName = highScores.name5 ?: "unknown player 8"
+//                winningCount++
+//            }
+//        }
+//        if (winningCount == 1) {
+//            currentGame.value?.let { currentGame ->
+//                currentGame.finished = true
+//                viewModelScope.launch {
+//                    database.gamesDao.update(currentGame)
+//                }
+//                _eventGameFinished.postValue(true)
+//            }
+//        }
     }
 
 }

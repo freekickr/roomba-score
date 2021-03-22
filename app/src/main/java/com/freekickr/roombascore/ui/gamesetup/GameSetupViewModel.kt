@@ -5,15 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.freekickr.roombascore.database.RoombaDatabase
-import com.freekickr.roombascore.database.entities.Game
+import com.freekickr.roombascore.database.entities.GameInfo
 import com.freekickr.roombascore.ui.gamesetup.menu.OnPlayersNumberClickListener
 import com.freekickr.roombascore.ui.gamesetup.menu.PlayersListAdapter
 import kotlinx.coroutines.launch
 
 class GameSetupViewModel(private val database: RoombaDatabase) : ViewModel() {
 
-    private val _eventSavedGameFound = MutableLiveData<Game?>()
-    val eventSavedGameFound: LiveData<Game?>
+    private val _eventSavedGameFound = MutableLiveData<GameInfo?>()
+    val eventSavedGameFound: LiveData<GameInfo?>
         get() = _eventSavedGameFound
 
     init {
@@ -42,7 +42,7 @@ class GameSetupViewModel(private val database: RoombaDatabase) : ViewModel() {
         }
     }
 
-    fun finishOpenedGame(game: Game) {
+    fun finishOpenedGame(game: GameInfo) {
         viewModelScope.launch {
             game.finished = true
             database.gamesDao.update(game)
